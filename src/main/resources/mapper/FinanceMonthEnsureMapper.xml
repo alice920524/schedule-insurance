@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.duia.mars.dao.FinanceMonthEnsureMapper">
+    <resultMap id="BaseResultMap" type="com.duia.mars.model.FinanceMonthEnsure">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="fo_id" jdbcType="INTEGER" property="foId"/>
+        <result column="every_month_money" jdbcType="VARCHAR" property="everyMonthMoney"/>
+        <result column="begin_date" jdbcType="DATE" property="beginDate"/>
+        <result column="end_date" jdbcType="DATE" property="endDate"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="all_course" jdbcType="INTEGER" property="allCourse"/>
+        <result column="class_id" jdbcType="INTEGER" property="classId"/>
+        <result column="order_id" jdbcType="INTEGER" property="orderId"/>
+        <result column="class_no" jdbcType="VARCHAR" property="classNo"/>
+    </resultMap>
+
+
+    <resultMap type="com.duia.mars.common.dto.FinanceMonthEnsureDto" id="financeMonthEnsureDtoResultMap">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="fo_id" jdbcType="INTEGER" property="foId"/>
+        <result column="every_month_money" jdbcType="VARCHAR" property="everyMonthMoney"/>
+        <result column="begin_date" jdbcType="DATE" property="beginDate"/>
+        <result column="end_date" jdbcType="DATE" property="endDate"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="all_course" jdbcType="INTEGER" property="allCourse"/>
+        <result column="class_id" jdbcType="INTEGER" property="classId"/>
+        <result column="order_id" jdbcType="INTEGER" property="orderId"/>
+        <result column="class_no" jdbcType="VARCHAR" property="classNo"/>
+        <result property="classBeginTime" column="class_begin_time"/>
+        <result property="classEndTime" column="class_end_time"/>
+        <result property="allCoursesCount" column="all_courses_count"/>
+    </resultMap>
+
+    <!--查询所有班级的所有课程数，开课和结课时间-->
+    <select id="selectAllCourseInfo" resultMap="financeMonthEnsureDtoResultMap" parameterType="String">
+        SELECT
+            finor.id as fo_id,
+            cs.id AS class_id,
+            cs.class_no,
+            min(csc.class_date) as begin_date,
+            max(csc.class_date) as end_date,
+            finor.order_id,
+            count( ccr.class_schedule_detail_id ) as all_course,
+            0 as status /*默认就是没确认这个班级*/
+        FROM
+            finance_order finor
+            LEFT JOIN pay_order podr ON finor.order_id = podr.id
+            LEFT JOIN pay_order_detail pod ON podr.id = pod.order_id and pod.com_type = 6
+            LEFT JOIN commodity_product cp on pod.com_id = cp.com_id
+            LEFT JOIN classes cs on cp.pro_id = cs.id
+            LEFT JOIN class_course_relation ccr on  cs.id = ccr.class_id
+            LEFT JOIN class_schedule_course csc on ccr.class_schedule_detail_id = csc.id
+        where 1=1
+            and	finor.schedule_time =#{scheduleTime}
+            and podr.type in('c','r','s','x')
+        GROUP BY
+            fo_id,
+            cs.id
+        UNION
+        SELECT
+            finor.id as fo_id,
+            cs.id AS class_id,
+            cs.class_no,
+            min(csc.class_date) as begin_date,
+            max(csc.class_date) as end_date,
+            finor.order_id,
+            count( ccr.class_schedule_detail_id ) as all_course,
+            0 as status /*默认就是没确认这个班级*/
+        FROM
+            finance_order finor
+            LEFT JOIN pay_order  podr ON finor.order_id = podr.id
+            LEFT JOIN pay_order_detail pod ON podr.id= pod.order_id
+            LEFT JOIN class_upgrade_detail cud on pod.com_id = cud.id
+            LEFT JOIN classes cs on cud.after_classid = cs.id
+            LEFT JOIN class_course_relation ccr on  cs.id = ccr.class_id
+            LEFT JOIN class_schedule_course csc on ccr.class_schedule_detail_id = csc.id
+        where 1=1
+            and	finor.schedule_time =#{scheduleTime}
+            and podr.type in('u')
+        GROUP BY
+            fo_id,
+            cs.id
+    </select>
+
+    <!--查询每个班级每个月的上课数-->
+    <select id="selectClassEveryMonCount" resultType="com.duia.mars.model.FinanceMonthCount" parameterType="Integer">
+        select
+        DATE_FORMAT(class_date,'%Y-%m') as monDate ,count(1) as monCount
+        FROM
+        class_course_relation ccr
+        JOIN class_schedule_course csc ON ccr.class_schedule_detail_id =  csc.id and ccr.class_schedulel_id = csc.class_schedule_id
+        WHERE
+        class_id = #{classId}
+        GROUP BY monDate
+    </select>
+
+
+    <!--查询时间内满足条件的班级id-->
+    <select id="selectClassIdbyFTime" resultType="Integer" parameterType="String">
+        SELECT
+        fme.class_id
+        FROM
+        finance_month_ensure fme
+        LEFT JOIN finance_order fior ON fior.id = fme.fo_id
+        where fior.schedule_time =#{scheduleTime}
+    </select>
+
+
+    <update id="updateByClassId" parameterType="com.duia.mars.model.FinanceMonthEnsure">
+        update finance_month_ensure
+        <trim prefix="set" suffixOverrides=",">
+            <if test="allCourse != null">all_course = #{allCourse},</if>
+            <if test="everyMonthMoney != null and everyMonthMoney != ''">every_month_money = #{everyMonthMoney},</if>
+        </trim>
+        <where>class_id = #{classId}</where>
+    </update>
+
+    <select id="getDetailByOrderId" parameterType="Integer" resultMap="BaseResultMap">
+        select * from finance_month_ensure
+        where order_id = #{id} and status =0
+    </select>
+
+    <delete id="closeFmeByDate" parameterType="String">
+        DELETE fme.*
+        FROM
+        finance_month_ensure fme
+        LEFT JOIN  finance_order finor  ON fme.fo_id = finor.id
+        WHERE
+        finor.schedule_time =#{scheduleTime}
+    </delete>
+
+    <!--根据finace_order的id 获取没有确认的fme-->
+    <select id="getFmeDetailByFoId" resultMap="BaseResultMap">
+        SELECT
+        fme.id,
+        fme.every_month_money,
+        fme.end_date,
+        fme.begin_date
+        FROM finance_month_ensure fme
+        where 1=1 and fme.status = 0
+        and fme.fo_id =#{foId}
+    </select>
+</mapper>

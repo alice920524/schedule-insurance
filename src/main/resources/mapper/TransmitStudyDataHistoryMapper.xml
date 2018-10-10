@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.duia.mars.dao.TransmitStudyDataHistoryMapper">
+
+	<resultMap type="com.duia.mars.model.TransmitStudyDataHistory" id="transmitStudyDataHistoryResultMap">
+		<result property="id" column="id" />
+		<result property="dataDate" column="data_date" />
+		<result property="totalRecordCount" column="total_record_count" />
+		<result property="totalBatchCount" column="total_batch_count" />
+		<result property="currentBatchNum" column="current_batch_num" />
+		<result property="currentRecordCount" column="current_record_count" />
+		<result property="currentSendTimes" column="current_send_times" />
+		<result property="sendDuration" column="send_duration" />
+		<result property="sendResultStatus" column="send_result_status" />
+		<result property="sendResultContent" column="send_result_content" />
+		<result property="sendTime" column="send_time" />
+		<result property="createTime" column="create_time" />
+		<result property="updateTime" column="update_time" />
+	</resultMap>
+
+	<!--<sql id="table_columns">
+		id,
+		data_date,
+		total_record_count,
+		total_batch_count,
+		current_batch_num,
+		current_record_count,
+		current_send_times,
+		send_duration,
+		send_result_status,
+		send_result_content,
+		send_time,
+		create_time,
+		update_time
+    </sql>
+	<sql id="entity_properties">
+		#{id},
+		#{dataDate},
+		#{totalRecordCount},
+		#{totalBatchCount},
+		#{currentBatchNum},
+		#{currentRecordCount},
+		#{currentSendTimes},
+		#{sendDuration},
+		#{sendResultStatus},
+		#{sendResultContent},
+		#{sendTime},
+		#{createTime},
+		#{updateTime}
+	</sql>
+
+	&lt;!&ndash; 适用于主键自增类型 &ndash;&gt;
+	<insert id="save" parameterType="com.duia.mars.model.TransmitStudyDataHistory" useGeneratedKeys="true" keyProperty="id">
+		insert into transmit_study_data_history( <include refid="table_columns" /> ) 
+		values ( <include refid="entity_properties" /> )
+	</insert>
+
+	<update id="update" parameterType="com.duia.mars.model.TransmitStudyDataHistory">
+		update transmit_study_data_history 
+		<trim prefix="set" suffixOverrides=",">
+			<if test="dataDate != null and dataDate != ''">data_date = #{dataDate},</if>
+			<if test="totalRecordCount != null and totalRecordCount != ''">total_record_count = #{totalRecordCount},</if>
+			<if test="totalBatchCount != null and totalBatchCount != ''">total_batch_count = #{totalBatchCount},</if>
+			<if test="currentBatchNum != null and currentBatchNum != ''">current_batch_num = #{currentBatchNum},</if>
+			<if test="currentRecordCount != null and currentRecordCount != ''">current_record_count = #{currentRecordCount},</if>
+			<if test="currentSendTimes != null and currentSendTimes != ''">current_send_times = #{currentSendTimes},</if>
+			<if test="sendDuration != null and sendDuration != ''">send_duration = #{sendDuration},</if>
+			<if test="sendResultStatus != null and sendResultStatus != ''">send_result_status = #{sendResultStatus},</if>
+			<if test="sendResultContent != null and sendResultContent != ''">send_result_content = #{sendResultContent},</if>
+			<if test="sendTime != null and sendTime != ''">send_time = #{sendTime},</if>
+			<if test="createTime != null and createTime != ''">create_time = #{createTime},</if>
+			<if test="updateTime != null and updateTime != ''">update_time = #{updateTime},</if>
+		</trim>
+		<where>id = #{id}</where>
+	</update>
+	
+	<select id="findById" resultMap="transmitStudyDataHistoryResultMap" parameterType="String" >
+		select <include refid="table_columns" />
+		from transmit_study_data_history
+		where id = #{id}
+	</select>
+	
+	<select id="queryAll" resultMap="transmitStudyDataHistoryResultMap">
+		select <include refid="table_columns" /> 
+		from transmit_study_data_history
+	</select>
+	
+	&lt;!&ndash; 使用like用法：columnName like concat('%',#columnName#,'%') &ndash;&gt;
+	<sql id="page_where">
+		<trim prefix="where" prefixOverrides="and | or ">
+			<if test="dataDate != null and dataDate != ''">and data_date = #{dataDate}</if>
+			<if test="totalRecordCount != null and totalRecordCount != ''">and total_record_count = #{totalRecordCount}</if>
+			<if test="totalBatchCount != null and totalBatchCount != ''">and total_batch_count = #{totalBatchCount}</if>
+			<if test="currentBatchNum != null and currentBatchNum != ''">and current_batch_num = #{currentBatchNum}</if>
+			<if test="currentRecordCount != null and currentRecordCount != ''">and current_record_count = #{currentRecordCount}</if>
+			<if test="currentSendTimes != null and currentSendTimes != ''">and current_send_times = #{currentSendTimes}</if>
+			<if test="sendDuration != null and sendDuration != ''">and send_duration = #{sendDuration}</if>
+			<if test="sendResultStatus != null and sendResultStatus != ''">and send_result_status = #{sendResultStatus}</if>
+			<if test="sendResultContent != null and sendResultContent != ''">and send_result_content = #{sendResultContent}</if>
+			<if test="sendTime != null and sendTime != ''">and send_time = #{sendTime}</if>
+			<if test="createTime != null and createTime != ''">and create_time = #{createTime}</if>
+			<if test="updateTime != null and updateTime != ''">and update_time = #{updateTime}</if>
+		</trim>
+	</sql>
+	
+	<select id="search" resultMap="transmitStudyDataHistoryResultMap" parameterType="com.duia.mars.model.TransmitStudyDataHistory">
+		select <include refid="table_columns" />
+		from transmit_study_data_history
+		<include refid="page_where" />
+	</select>
+	
+	<select id="page" resultMap="transmitStudyDataHistoryResultMap" parameterType="com.duia.mars.model.TransmitStudyDataHistory">
+		select <include refid="table_columns" />
+		from transmit_study_data_history
+		<include refid="page_where" />
+		limit #{firstIndex},#{pageSize}
+	</select>
+
+    <select id="count" resultType="long" parameterType="com.duia.mars.model.TransmitStudyDataHistory">
+        select count(id) from transmit_study_data_history
+        <include refid="page_where" />
+    </select>-->
+
+	<!-- 其他自定义SQL -->
+
+	<!-- 根据数据日期和当前发送次数获取发送结果状态 -->
+	<select id="selectSendResultStatusByDataDateAndCurrentSendTimes" resultType="int">
+		select
+			send_result_status
+		from
+			transmit_study_data_history
+		where
+			data_date = #{dataDate} and current_send_times = #{currentSendTimes}
+		order by id desc
+		limit 0, 1
+	</select>
+
+	<update id="updateEmoji">
+		update
+			transmit_study_data_history
+		set
+			send_result_content = #{emoji}
+		where
+			id = 1
+	</update>
+
+</mapper>

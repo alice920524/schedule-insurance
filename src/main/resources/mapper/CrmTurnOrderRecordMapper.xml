@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.duia.mars.dao.CrmTurnOrderRecordMapper">
+  <resultMap id="BaseResultMap" type="com.duia.mars.model.CrmTurnOrderRecord">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="old_order_id" jdbcType="INTEGER" property="oldOrderId" />
+    <result column="new_order_id" jdbcType="INTEGER" property="newOrderId" />
+    <result column="author_user_id" jdbcType="INTEGER" property="authorUserId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="has_refund" jdbcType="INTEGER" property="hasRefund" />
+    <result column="teach_status" jdbcType="INTEGER" property="teachStatus" />
+    <result column="old_handover_id" jdbcType="INTEGER" property="oldHandoverId" />
+    <result column="new_handover_id" jdbcType="INTEGER" property="newHandoverId" />
+    <result column="reason" jdbcType="VARCHAR" property="reason" />
+    <result column="crm_refund_id" jdbcType="INTEGER" property="crmRefundId" />
+    <result column="old_balance" jdbcType="DOUBLE" property="oldBalance" />
+    <result column="new_discount" jdbcType="DOUBLE" property="newDiscount" />
+    <result column="back_num" jdbcType="DOUBLE" property="backNum" />
+    <result column="repair_num" jdbcType="DOUBLE" property="repairNum" />
+    <result column="audit_remark" jdbcType="VARCHAR" property="auditRemark" />
+    <result column="deduct_num" jdbcType="DOUBLE" property="deductNum" />
+    <result column="teach_time" jdbcType="TIMESTAMP" property="teachTime" />
+  </resultMap>
+
+    <!--退余额-->
+    <select id="getBalanceList" resultMap="BaseResultMap">
+        SELECT  ctor.old_order_id,ctor.create_time
+        FROM
+        crm_turn_order_record ctor
+        LEFT JOIN finance_order finor ON ctor.old_order_id = finor.order_id
+        WHERE
+        ctor.has_refund = 3
+        AND ctor.teach_status = 2
+        AND finor.refund_class_count IS NULL
+        AND finor.order_id IS NOT NULL
+        AND finor.stop_status = 0
+    </select>
+
+
+    <select id="getTurnList" resultMap="BaseResultMap">
+        SELECT  ctor.old_order_id,ctor.create_time
+        FROM
+        crm_turn_order_record ctor
+        LEFT JOIN finance_order finor ON ctor.old_order_id = finor.order_id
+        WHERE
+        ctor.has_refund =2
+        AND ctor.teach_status = 2
+        AND finor.refund_class_count IS NULL
+        AND finor.order_id IS NOT NULL
+        AND finor.stop_status = 0
+    </select>
+
+</mapper>

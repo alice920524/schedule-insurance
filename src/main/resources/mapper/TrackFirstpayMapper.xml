@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.duia.mars.dao.TrackFirstpayMapper">
+  <resultMap id="BaseResultMap" type="com.duia.mars.model.TrackFirstpay">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="regist_time" jdbcType="TIMESTAMP" property="registTime" />
+    <result column="pay_time" jdbcType="TIMESTAMP" property="payTime" />
+    <result column="time" jdbcType="VARCHAR" property="time" />
+  </resultMap>
+
+
+
+    <!-- 定时任务把上月的数据存到track_firstpay -->
+    <insert id="saveData" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="int" keyProperty="id" order="AFTER">
+            SELECT
+            LAST_INSERT_ID()
+        </selectKey>
+        insert into track_firstPay (user_id,regist_time,pay_time,time) values
+        <foreach collection="list" item="lt" separator=",">
+            (#{lt.userId},#{lt.registTime},#{lt.payTime},#{lt.time})
+        </foreach>
+    </insert>
+
+    <!-- 查询上月首次订单的list-->
+    <select id="selectListDatas" resultType="java.util.Map" resultMap="BaseResultMap" >
+        select * from (select result.user_id as userId,u.regist_time as registTime,result.pay_time as payTime,TIMESTAMPDIFF(MINUTE, u.regist_time,result.pay_time)as time from
+        (SELECT
+        user_id,
+        pay_time
+        FROM
+        pay_order
+        WHERE
+        1=1
+        and	order_parent_id = 0
+        and  pay_time &lt;= #{endTime}
+        AND pay_time &gt;= #{beginTime}
+        AND pay_status = 'pay_status_success'
+        GROUP BY
+        user_id)as result JOIN users u on result.user_id = u.id
+        )as a where time &gt; 0 and  time &lt;= 44640
+        ORDER BY a.payTime
+    </select>
+</mapper>

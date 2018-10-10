@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.duia.mars.dao.FinanceOrderMapper">
+  <resultMap id="BaseResultMap" type="com.duia.mars.model.FinanceOrder">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="order_id" jdbcType="INTEGER" property="orderId" />
+    <result column="pay_num" jdbcType="VARCHAR" property="payNum" />
+    <result column="cost_price" jdbcType="DOUBLE" property="costPrice" />
+    <result column="balance" jdbcType="DOUBLE" property="balance" />
+    <result column="schedule_time" jdbcType="DATE" property="scheduleTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="finance_time" jdbcType="TIMESTAMP" property="financeTime" />
+    <result column="pay_time" jdbcType="TIMESTAMP" property="payTime" />
+    <result column="tail_dif" jdbcType="DOUBLE" property="tailDif" />
+    <result column="sku_id" jdbcType="INTEGER" property="skuId" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="com_id" jdbcType="INTEGER" property="comId" />
+    <result column="com_name" jdbcType="VARCHAR" property="comName" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="regist_fee" jdbcType="DOUBLE" property="registFee" />
+    <result column="all_class_time" jdbcType="INTEGER" property="allClassTime" />
+    <result column="last_class_time" jdbcType="DATE" property="lastClassTime" />
+    <result column="pay_type" jdbcType="VARCHAR" property="payType" />
+    <result column="com_type" jdbcType="VARCHAR" property="comType" />
+    <result column="refund_class_count" jdbcType="INTEGER" property="refundClassCount" />
+    <result column="refund_class_time" jdbcType="TIMESTAMP" property="refundClassTime" />
+    <result column="balance_class_count" jdbcType="INTEGER" property="balanceClassCount" />
+    <result column="balance_class_time" jdbcType="TIMESTAMP" property="balanceClassTime" />
+    <result column="turn_class_count" jdbcType="INTEGER" property="turnClassCount" />
+    <result column="turn_class_time" jdbcType="TIMESTAMP" property="turnClassTime" />
+    <result column="stop_status" jdbcType="INTEGER" property="stopStatus" />
+    <result column="stop_date" jdbcType="DATE" property="stopDate" />
+    <result column="before_count" jdbcType="INTEGER" property="beforeCount" />
+    <result column="close_class_count" jdbcType="INTEGER" property="closeClassCount" />
+    <result column="close_class_time" jdbcType="TIMESTAMP" property="closeClassTime" />
+  </resultMap>
+
+    <resultMap type="com.duia.mars.common.dto.FinanceOrderDto" id="financeOrderDtoResultMap">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="order_id" jdbcType="INTEGER" property="orderId" />
+        <result column="pay_num" jdbcType="VARCHAR" property="payNum" />
+        <result column="cost_price" jdbcType="DOUBLE" property="costPrice" />
+        <result column="balance" jdbcType="DOUBLE" property="balance" />
+        <result column="schedule_time" jdbcType="DATE" property="scheduleTime" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="finance_time" jdbcType="TIMESTAMP" property="financeTime" />
+        <result column="pay_time" jdbcType="TIMESTAMP" property="payTime" />
+        <result column="tail_dif" jdbcType="DOUBLE" property="tailDif" />
+        <result column="sku_id" jdbcType="INTEGER" property="skuId" />
+        <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+        <result column="com_id" jdbcType="INTEGER" property="comId" />
+        <result column="com_name" jdbcType="VARCHAR" property="comName" />
+        <result column="user_id" jdbcType="INTEGER" property="userId" />
+        <result column="regist_fee" jdbcType="DOUBLE" property="registFee" />
+        <result column="all_class_time" jdbcType="INTEGER" property="allClassTime" />
+        <result column="last_class_time" jdbcType="DATE" property="lastClassTime" />
+        <result column="pay_type" jdbcType="VARCHAR" property="payType" />
+        <result column="com_type" jdbcType="VARCHAR" property="comType" />
+        <result column="refund_class_count" jdbcType="INTEGER" property="refundClassCount" />
+        <result column="refund_class_time" jdbcType="TIMESTAMP" property="refundClassTime" />
+        <result column="balance_class_count" jdbcType="INTEGER" property="balanceClassCount" />
+        <result column="balance_class_time" jdbcType="TIMESTAMP" property="balanceClassTime" />
+        <result column="turn_class_count" jdbcType="INTEGER" property="turnClassCount" />
+        <result column="turn_class_time" jdbcType="TIMESTAMP" property="turnClassTime" />
+        <result column="stop_status" jdbcType="INTEGER" property="stopStatus" />
+        <result column="stop_date" jdbcType="DATE" property="stopDate" />
+        <result column="before_count" jdbcType="INTEGER" property="beforeCount" />
+        <result column="close_class_count" jdbcType="INTEGER" property="closeClassCount" />
+        <result column="close_class_time" jdbcType="TIMESTAMP" property="closeClassTime" />
+
+        <result property="fmId" column="fmId" />
+        <result property="everyMonthMoney" column="every_month_money"/>
+        <result property="beginDate" column="begin_date"/>
+        <result property="endDate" column="end_date"/>
+        <result property="allCourse" column="all_course"/>
+    </resultMap>
+    <!--查询满足条件的订单-->
+    <!--昨天财务审核通过-->
+    <select id="searchEnsureOrderList" resultMap="BaseResultMap">
+        SELECT
+        pod.id as order_id,
+        pod.pay_num,
+        pod.cost_price,
+        pod.old_balance,
+        pod.create_time,
+        cshn.finance_time,
+        pod.pay_time,
+        pod.category_id as sku_id,
+        pod.category_name as sku_name,
+        pod.product_id as com_id,
+        pod.category_name as com_name,
+        pod.pay_type,
+        pod.type as com_type,
+        pod.user_id,
+        0 as stop_status
+        FROM
+        crm_sale_handover_new cshn
+        LEFT JOIN pay_order pod ON cshn.order_id = pod.id
+        LEFT JOIN finance_order finor on cshn.order_id = finor.order_id
+        WHERE
+        1=1
+        AND cshn.finance_status =1
+        AND cshn.parent_id = 0
+        AND	cshn.finance_time &gt;= #{beginTime}
+        AND	cshn.finance_time  &lt;= #{endTime}
+        AND finor.order_id is NULL
+        UNION
+        SELECT
+        pod.id as order_id,
+        pod.pay_num,
+        pod.cost_price,
+        pod.old_balance,
+        pod.create_time,
+        cshn.finance_time,
+        pod.pay_time,
+        pod.category_id as sku_id,
+        pod.category_name as sku_name,
+        pod.product_id as com_id,
+        pod.category_name as com_name,
+        pod.pay_type,
+        pod.type as com_type,
+        pod.user_id,
+        0 as stop_status
+        FROM
+        crm_sale_handover_new cshn
+        LEFT JOIN pay_order pod ON cshn.order_id = pod.id
+        LEFT JOIN finance_order finor on cshn.order_id = finor.order_id
+        WHERE
+        1=1
+        AND cshn.finance_status =1
+        AND cshn.parent_id = 0
+        and pod.create_time  &gt;='2017-03-01 00:00:00'
+        AND cshn.finance_time is NULL
+        AND finor.order_id is NULL
+    </select>
+
+
+    <!--更新  通过订单id-->
+    <update id="updateByOrderId" parameterType="com.duia.mars.model.FinanceOrder">
+        update finance_order
+        <trim prefix="set" suffixOverrides=",">
+            <if test="payNum != null and payNum != ''">pay_num = #{payNum},</if>
+            <if test="costPrice != null and costPrice != ''">cost_price = #{costPrice},</if>
+            <if test="balance != null and balance != ''">balance = #{balance},</if>
+            <if test="createTime != null and createTime != ''">create_time = #{createTime},</if>
+            <if test="financeTime != null and financeTime != ''">finance_time = #{financeTime},</if>
+            <if test="payTime != null and payTime != ''">pay_time = #{payTime},</if>
+            <if test="tailDif != null and tailDif != ''">tail_dif = #{tailDif},</if>
+            <if test="skuId != null">sku_id = #{skuId},</if>
+            <if test="skuName != null and skuName != ''">sku_name = #{skuName},</if>
+            <if test="comId != null ">com_id = #{comId},</if>
+            <if test="comName != null and comName != ''">com_name = #{comName},</if>
+            <if test="userId != null ">user_id = #{userId},</if>
+            <if test="registFee != null and registFee != ''">regist_fee = #{registFee},</if>
+            <if test="allClassTime != null and allClassTime != ''">all_class_time = #{allClassTime},</if>
+            <if test="lastClassTime != null and lastClassTime != ''">last_class_time = #{lastClassTime},</if>
+            <if test="payType != null and payType != ''">pay_type = #{payType},</if>
+            <if test="comType != null and comType != ''">com_type = #{comType},</if>
+            <if test="refundClassCount != null ">refund_class_count = #{refundClassCount},</if>
+            <if test="refundClassTime != null and refundClassTime != ''">refund_class_time = #{refundClassTime},</if>
+            <if test="balanceClassCount != null ">balance_class_count = #{balanceClassCount},</if>
+            <if test="balanceClassTime != null and balanceClassTime != ''">balance_class_time = #{balanceClassTime},</if>
+            <if test="turnClassCount != null ">turn_class_count = #{turnClassCount},</if>
+            <if test="turnClassTime != null and turnClassTime != ''">turn_class_time = #{turnClassTime},</if>
+            <if test="stopStatus != null">stop_status = #{stopStatus},</if>
+            <if test="scheduleTime != null and scheduleTime != ''">schedule_time = #{scheduleTime},</if>
+            <if test="beforeCount != null">before_count = #{beforeCount},</if>
+            <if test="closeClassCount != null">close_class_count = #{closeClassCount},</if>
+            <if test="closeClassTime != null and closeClassTime != ''">close_class_time = #{closeClassTime},</if>
+            <if test="stopDate != null and stopDate != ''">stop_date = #{stopDate},</if>
+        </trim>
+        <where>order_id = #{orderId}</where>
+    </update>
+
+
+    <!--根据时间条件删除订单记录-->
+    <delete id="closeFinorByDate" parameterType="String">
+        DELETE from finance_order where schedule_time = #{scheduleTime}
+    </delete>
+
+
+    <!--根据第一步的id 获取没有课表的 已经结课的-->
+    <select id="selectNotSureById" parameterType="Integer" resultMap="financeOrderDtoResultMap">
+        SELECT
+        finor.id,
+        finor.create_time,
+        fme.id as fmId,
+        fme.every_month_money,
+        fme.begin_date,
+        fme.end_date,
+        fme.all_course
+        FROM
+        finance_order finor
+        LEFT JOIN finance_month_ensure fme ON finor.id = fme.fo_id
+        WHERE 1=1
+        and	finor.id = #{id}
+        and fme.status = 0
+        and (fme.every_month_money is NULL and fme.begin_date IS NULL  and fme.end_date IS NULL )
+        UNION
+        SELECT
+        finor.id,
+        finor.create_time,
+        fme.id as fmId,
+        fme.every_month_money,
+        fme.begin_date,
+        fme.end_date,
+        fme.all_course
+        FROM
+        finance_order finor
+        LEFT JOIN finance_month_ensure fme ON finor.id = fme.fo_id
+        WHERE  1=1
+        and finor.id = #{id}
+        and fme.status = 0
+        and DATE_FORMAT(fme.end_date,'%Y-%m')  &lt;  DATE_FORMAT(finor.create_time,'%Y-%m')
+    </select>
+
+
+    <!--查询id  根据调度时间-->
+    <select id="selectIdByScheduleTime"   resultType="Integer">
+        SELECT
+        id
+        FROM
+        finance_order
+        WHERE 1=1
+        <if test="scheduleTime != null and scheduleTime != ''">
+            and  schedule_time = #{scheduleTime}
+        </if>
+        <if test="stopStatus != null">
+            and stop_status = #{stopStatus}
+        </if>
+    </select>
+
+    <!--根据finor的id 查询还有没确认的课程没有-->
+    <select id="checkNotSureCount" resultType="Int" parameterType="Integer">
+        SELECT
+        count(1)
+        FROM
+        finance_order finor
+        LEFT JOIN finance_month_ensure fme ON finor.id = fme.fo_id
+        WHERE 1=1
+        and finor.id =#{id}
+        and fme.status = 0
+    </select>
+
+    <!--查询关闭情况-->
+    <select id="selectCloseOrder"  resultMap="BaseResultMap">
+        SELECT
+        pocr.order_id,pocr.close_time as close_class_time
+        FROM
+        pay_order_close_record pocr
+        LEFT JOIN finance_order finor ON pocr.order_id= finor.order_id
+        WHERE
+        pocr.remark IN (
+        '财务关闭订单',
+        '教务关闭订单'
+        )
+        and finor.stop_status = 0
+        union
+        SELECT
+        pocr.order_id,pocr.close_time as close_class_time
+        FROM
+        pay_order_close_record pocr
+        LEFT JOIN finance_order finor ON pocr.order_id= finor.order_id
+        WHERE
+        pocr.remark IN (
+        '财务关闭订单',
+        '教务关闭订单'
+        )
+        and finor.stop_status is NULL
+    </select>
+
+    <update id="updateAllCountById" parameterType="Integer">
+        UPDATE finance_order
+        SET all_class_time =(
+        SELECT
+        sum(all_course)
+        FROM
+        finance_month_ensure
+        WHERE
+        fo_id = #{id}),
+        last_class_time = (
+        SELECT
+        max(end_date)
+        FROM
+        finance_month_ensure
+        WHERE
+        fo_id =#{id}) where id =  #{id}
+    </update>
+
+
+</mapper>

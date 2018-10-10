@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.duia.mars.dao.TrackClassCourseLiveMapper">
+
+	<resultMap type="com.duia.mars.model.TrackClassCourseLive" id="trackClassCourseLiveResultMap">
+		<result property="id" column="id" />
+		<result property="userId" column="userId" />
+		<result property="studentId" column="studentId" />
+		<result property="classId" column="classId" />
+		<result property="courseId" column="courseId" />
+		<result property="source" column="source" />
+		<result property="inTime" column="inTime" />
+		<result property="durationSecond" column="durationSecond" />
+		<result property="isAttend" column="is_attend" />
+		<result property="appType" column="app_type" />
+		<result property="platform" column="platform" />
+		<result property="recordId" column="record_id" />
+		<result property="enterTime" column="enter_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="attendanceDuration" column="attendance_duration" />
+	</resultMap>
+
+	<resultMap id="trackClassCourseLiveStudyDataDtoResultMap" type="com.duia.mars.dto.TrackClassCourseLiveStudyDataDto">
+		<result property="id" column="id" />
+		<result property="userId" column="user_id" />
+		<result property="studentId" column="student_id" />
+		<result property="studentIdAddition" column="student_id_addition" />
+		<result property="insuranceUserName" column="insurance_user_name" />
+		<result property="idCard" column="id_card" />
+		<result property="payTime" column="pay_time" />
+		<result property="insurancePeriod" column="insurance_period" />
+		<result property="signDate" column="sign_date" />
+		<result property="skuId" column="sku_id" />
+		<result property="classNo" column="class_no" />
+		<result property="classCourseCount" column="class_course_count" />
+		<result property="classTypeId" column="class_type_id" />
+		<result property="classTypeTitle" column="class_type_title" />
+		<result property="scheduleName" column="schedule_name" />
+		<result property="chapterName" column="chapter_name" />
+		<result property="courseId" column="course_id" />
+		<result property="courseName" column="course_name" />
+		<result property="courseStartTime" column="course_start_time" />
+		<result property="courseEndTime" column="course_end_time" />
+		<result property="source" column="source" />
+		<result property="enterTime" column="enter_time" />
+		<result property="updateTime" column="update_time" />
+	</resultMap>
+
+	<!--<sql id="table_columns">
+		id,
+		userId,
+		studentId,
+		classId,
+		courseId,
+		source,
+		inTime,
+		durationSecond,
+		is_attend,
+		app_type,
+		platform,
+		record_id,
+		enter_time,
+		update_time,
+		attendance_duration
+    </sql>
+	<sql id="entity_properties">
+		#{id},
+		#{userId},
+		#{studentId},
+		#{classId},
+		#{courseId},
+		#{source},
+		#{inTime},
+		#{durationSecond},
+		#{isAttend},
+		#{appType},
+		#{platform},
+		#{recordId},
+		#{enterTime},
+		#{updateTime},
+		#{attendanceDuration}
+	</sql>
+	
+	&lt;!&ndash; 适用于主键自增类型 &ndash;&gt;
+	<insert id="save" parameterType="com.duia.mars.model.TrackClassCourseLive" useGeneratedKeys="true" keyProperty="id">
+		insert into track_class_course_live( <include refid="table_columns" /> ) 
+		values ( <include refid="entity_properties" /> )
+	</insert>
+	
+	<delete id="deleteByIds">
+		delete from track_class_course_live
+		where id in
+		<foreach item="item" collection="array" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	
+	<update id="update" parameterType="com.duia.mars.model.TrackClassCourseLive">
+		update track_class_course_live 
+		<trim prefix="set" suffixOverrides=",">
+			<if test="userId != null and userId != ''">userId = #{userId},</if>
+			<if test="studentId != null and studentId != ''">studentId = #{studentId},</if>
+			<if test="classId != null and classId != ''">classId = #{classId},</if>
+			<if test="courseId != null and courseId != ''">courseId = #{courseId},</if>
+			<if test="source != null and source != ''">source = #{source},</if>
+			<if test="inTime != null and inTime != ''">inTime = #{inTime},</if>
+			<if test="durationSecond != null and durationSecond != ''">durationSecond = #{durationSecond},</if>
+			<if test="isAttend != null and isAttend != ''">is_attend = #{isAttend},</if>
+			<if test="appType != null and appType != ''">app_type = #{appType},</if>
+			<if test="platform != null and platform != ''">platform = #{platform},</if>
+			<if test="recordId != null and recordId != ''">record_id = #{recordId},</if>
+			<if test="enterTime != null and enterTime != ''">enter_time = #{enterTime},</if>
+			<if test="updateTime != null and updateTime != ''">update_time = #{updateTime},</if>
+			<if test="attendanceDuration != null and attendanceDuration != ''">attendance_duration = #{attendanceDuration},</if>
+		</trim>
+		<where>id = #{id}</where>
+	</update>
+	
+	<select id="findById" resultMap="trackClassCourseLiveResultMap" parameterType="String" >
+		select <include refid="table_columns" />
+		from track_class_course_live
+		where id = #{id}
+	</select>
+	
+	<select id="queryAll" resultMap="trackClassCourseLiveResultMap">
+		select <include refid="table_columns" /> 
+		from track_class_course_live
+	</select>
+	
+	&lt;!&ndash; 使用like用法：columnName like concat('%',#columnName#,'%') &ndash;&gt;
+	<sql id="page_where">
+		<trim prefix="where" prefixOverrides="and | or ">
+			<if test="userId != null and userId != ''">and userId = #{userId}</if>
+			<if test="studentId != null and studentId != ''">and studentId = #{studentId}</if>
+			<if test="classId != null and classId != ''">and classId = #{classId}</if>
+			<if test="courseId != null and courseId != ''">and courseId = #{courseId}</if>
+			<if test="source != null and source != ''">and source = #{source}</if>
+			<if test="inTime != null and inTime != ''">and inTime = #{inTime}</if>
+			<if test="durationSecond != null and durationSecond != ''">and durationSecond = #{durationSecond}</if>
+			<if test="isAttend != null and isAttend != ''">and is_attend = #{isAttend}</if>
+			<if test="appType != null and appType != ''">and app_type = #{appType}</if>
+			<if test="platform != null and platform != ''">and platform = #{platform}</if>
+			<if test="recordId != null and recordId != ''">and record_id = #{recordId}</if>
+			<if test="enterTime != null and enterTime != ''">and enter_time = #{enterTime}</if>
+			<if test="updateTime != null and updateTime != ''">and update_time = #{updateTime}</if>
+			<if test="attendanceDuration != null and attendanceDuration != ''">and attendance_duration = #{attendanceDuration}</if>
+		</trim>
+	</sql>
+	
+	<select id="search" resultMap="trackClassCourseLiveResultMap" parameterType="com.duia.mars.model.TrackClassCourseLive">
+		select <include refid="table_columns" />
+		from track_class_course_live
+		<include refid="page_where" />
+	</select>
+	
+	<select id="page" resultMap="trackClassCourseLiveResultMap" parameterType="com.duia.mars.model.TrackClassCourseLive">
+		select <include refid="table_columns" />
+		from track_class_course_live
+		<include refid="page_where" />
+		limit #{firstIndex},#{pageSize}
+	</select>
+
+    <select id="count" resultType="long" parameterType="com.duia.mars.model.TrackClassCourseLive">
+        select count(id) from track_class_course_live
+        <include refid="page_where" />
+    </select>-->
+
+	<!-- 其他自定义SQL -->
+
+	<!-- todo for 03-06 12:00前数据 -->
+
+	<!-- sql： 获取学习数据，不含教师资格证sku的，没有where -->
+	<sql id="sql_selectStudyDataNoTeachSku_no_where">
+
+		select
+
+			tccl.id,
+
+			tccl.userId user_id,
+			tccl.studentId student_id,
+			<!-- csd.id student_id_addition, -->
+
+			<!-- u.username insurance_user_name, -->
+			<!-- u.id_card, -->
+			<!-- u.pay_time, -->
+			<!-- u.insurance_period, -->
+			<!-- u.sign_date, -->
+
+			c.sku sku_id,
+			c.class_no,
+			cc.course_count class_course_count,
+
+			c.class_type_id,
+			ct.title class_type_title,
+
+			cs.`name` schedule_name,
+			cscp.chapter_name,
+
+			tccl.courseId course_id,
+			csc.course_name,
+			concat(csc.class_date, " ", csc.start_time) course_start_time,
+			concat(csc.class_date, " ", csc.end_time) course_end_time,
+
+			tccl.source,
+
+			tccl.enter_time,
+			tccl.update_time
+
+		from
+        track_class_course_live tccl
+
+			inner join class_schedule_course csc on csc.id = tccl.courseId
+			left join class_schedule cs on cs.id = csc.class_schedule_id
+			left join class_schedule_chapter cscp on cscp.id = csc.chapter_id
+
+			inner join classes c on c.id = tccl.classId
+			left join class_type ct on ct.id = c.class_type_id
+
+			<!-- 签署了的用户：非教师资格证sku的 -->
+			inner join (
+				select
+					csi.user_id, c.class_type_id<!-- , p.pay_time, csi.username, csi.id_card, csi.insurance_period, csi.sign_date -->
+				from
+					class_student_insurance csi
+					left join classes c on c.id = csi.last_class_id
+				where
+					csi.validity = 1
+					and csi.`status` in (1, 2)
+					and c.sku not in (118, 220, 201)		<!-- 不要教师资格证的sku -->
+				group by
+					csi.user_id, c.class_type_id
+			) u on u.user_id = tccl.userId and u.class_type_id = c.class_type_id
+
+			<!-- 班级-课程数量 -->
+			inner join (
+				select
+					class_id, count(*) course_count
+				from
+					class_course_relation
+				group by
+					class_id
+			) cc on cc.class_id = tccl.classId
+
+		<!-- 用户的学员id -->
+		<!-- left join class_student_detail csd on csd.user_id = tccl.userId and tccl.studentId in (0, -1) -->
+	</sql>
+
+
+	<!-- sql： 获取学习数据，只含教师资格证sku的，没有where -->
+	<sql id="sql_selectStudyDataOnlyTeachSku_no_where">
+
+		select
+
+			tccl.id,
+
+			tccl.userId user_id,
+			tccl.studentId student_id,
+			<!-- csd.id student_id_addition, -->
+
+			<!-- u.username insurance_user_name, -->
+			<!-- u.id_card, -->
+			<!-- u.pay_time, -->
+			<!-- u.insurance_period, -->
+			<!-- u.sign_date, -->
+
+			c.sku sku_id,
+			c.class_no,
+			cc.course_count class_course_count,
+
+			c.class_type_id,
+			ct.title class_type_title,
+
+			cs.`name` schedule_name,
+			cscp.chapter_name,
+
+			tccl.courseId course_id,
+			csc.course_name,
+			concat(csc.class_date, " ", csc.start_time) course_start_time,
+			concat(csc.class_date, " ", csc.end_time) course_end_time,
+
+			tccl.source,
+
+			tccl.enter_time,
+			tccl.update_time
+
+		from
+        track_class_course_live tccl
+
+			inner join class_schedule_course csc on csc.id = tccl.courseId
+			left join class_schedule cs on cs.id = csc.class_schedule_id
+			left join class_schedule_chapter cscp on cscp.id = csc.chapter_id
+
+			inner join classes c on c.id = tccl.classId
+			left join class_type ct on ct.id = c.class_type_id
+
+			<!-- 用户：教师资格证sku的 -->
+			inner join (
+				select
+					csi.user_id, c.sku
+				from
+					class_student_insurance csi
+					left join classes c on c.id = csi.last_class_id
+				where
+					csi.validity = 1
+					and csi.`status` in (1, 2)
+					and c.sku in (118, 220, 201)					<!-- 只要教师资格证的sku -->
+				group by
+					csi.user_id, c.sku
+			) sku on sku.user_id = tccl.userId and sku.sku = c.sku
+
+			<!-- 班级-课程数 -->
+			inner join (
+				select
+					class_id, count(*) course_count
+				from
+					class_course_relation
+				group by
+					class_id
+			) cc on cc.class_id = tccl.classId
+
+			<!-- 用户的学员id -->
+			<!-- left join class_student_detail csd on csd.user_id = tccl.userId and tccl.studentId in (0, -1) -->
+	</sql>
+
+
+	<!-- sql：获取学习数据，一些额外指定的人的，没有where -->
+	<sql id="sql_selectStudyDataAssigned_no_where">
+
+		select
+
+			tccl.id,
+
+			iss.user_id,
+			iss.student_id,
+			<!-- null student_id_addition, -->
+
+			c.sku sku_id,
+			c.class_no,
+			cc.course_count class_course_count,
+
+			c.class_type_id,
+			ct.title class_type_title,
+
+			cs.`name` schedule_name,
+			cscp.chapter_name,
+
+			tccl.courseId course_id,
+			csc.course_name,
+			concat(csc.class_date, " ", csc.start_time) course_start_time,
+			concat(csc.class_date, " ", csc.end_time) course_end_time,
+
+			tccl.source,
+
+			tccl.enter_time,
+			tccl.update_time
+
+		from
+        track_class_course_live tccl
+
+			inner join class_schedule_course csc on csc.id = tccl.courseId
+			left join class_schedule cs on cs.id = csc.class_schedule_id
+			left join class_schedule_chapter cscp on cscp.id = csc.chapter_id
+
+			inner join classes c on c.id = tccl.classId
+			left join class_type ct on ct.id = c.class_type_id
+
+			<!-- 用户：excel中指定的1万多人 -->
+			inner join transmit_insurance_sign_student iss on iss.user_id = tccl.userId or iss.student_id = tccl.studentId
+
+			<!-- 班级-课程数 -->
+			inner join (
+				select
+					class_id, count(*) course_count
+				from
+					class_course_relation
+				group by
+					class_id
+			) cc on cc.class_id = tccl.classId
+	</sql>
+
+
+
+	<!-- 获取学习数据，不含教师资格证sku的，根据createTime -->
+	<select id="selectStudyDataNoTeachSkuByCreateTime" resultMap="trackClassCourseLiveStudyDataDtoResultMap">
+
+		<include refid="sql_selectStudyDataNoTeachSku_no_where" />
+		where
+			tccl.create_time &gt;= #{beginTime} and tccl.create_time &lt;= #{endTime}
+			and tccl.enter_time is not null and tccl.update_time is not null
+
+	</select>
+
+	<!-- 获取学习数据，只含教师资格证sku的，根据createTime -->
+	<select id="selectStudyDataOnlyTeachSkuByCreateTime" resultMap="trackClassCourseLiveStudyDataDtoResultMap">
+
+		<include refid="sql_selectStudyDataOnlyTeachSku_no_where" />
+		where
+			tccl.create_time &gt;= #{beginTime} and tccl.create_time &lt;= #{endTime}
+			and tccl.enter_time is not null and tccl.update_time is not null
+
+	</select>
+
+	<!-- 获取学习数据，一些额外指定的人的，根据createTime -->
+	<select id="selectStudyDataAssignedByCreateTime" resultMap="trackClassCourseLiveStudyDataDtoResultMap">
+
+		<include refid="sql_selectStudyDataAssigned_no_where" />
+		where
+			tccl.create_time &gt;= #{beginTime} and tccl.create_time &lt;= #{endTime}
+			and tccl.enter_time is not null and tccl.update_time is not null
+
+	</select>
+
+
+	<!-- 获取学习数据，不含教师资格证sku的，根据inTime -->
+	<select id="selectStudyDataNoTeachSkuByInTime" resultMap="trackClassCourseLiveStudyDataDtoResultMap">
+
+		<include refid="sql_selectStudyDataNoTeachSku_no_where" />
+		where
+			tccl.inTime &gt;= #{beginTime} and tccl.inTime &lt;= #{endTime}
+			and tccl.enter_time is not null and tccl.update_time is not null
+		<!-- order by
+			tccl.userId -->
+
+	</select>
+
+	<!-- 获取学习数据，只含教师资格证sku的，根据inTime -->
+	<select id="selectStudyDataOnlyTeachSkuByInTime" resultMap="trackClassCourseLiveStudyDataDtoResultMap">
+
+		<include refid="sql_selectStudyDataOnlyTeachSku_no_where" />
+		where
+			tccl.inTime &gt;= #{beginTime} and tccl.inTime &lt;= #{endTime}
+			and tccl.enter_time is not null and tccl.update_time is not null
+
+	</select>
+
+	<!-- 获取学习数据，一些额外指定的人的，根据inTime -->
+	<select id="selectStudyDataAssignedByInTime" resultMap="trackClassCourseLiveStudyDataDtoResultMap">
+
+		<include refid="sql_selectStudyDataAssigned_no_where" />
+		where
+			tccl.inTime &gt;= #{beginTime} and tccl.inTime &lt;= #{endTime}
+			and tccl.enter_time is not null and tccl.update_time is not null
+
+	</select>
+
+
+	<!-- 获取学习数据，不含教师资格证sku的，根据inTime -->
+	<select id="selectStudyDataNoTeachSkuByEnterTime" resultMap="trackClassCourseLiveStudyDataDtoResultMap">
+
+		<include refid="sql_selectStudyDataNoTeachSku_no_where" />
+		where
+			tccl.enter_time &gt;= #{beginTime} and tccl.enter_time &lt;= #{endTime}
+			and tccl.enter_time is not null and tccl.update_time is not null
+		<!-- order by
+			tccl.userId -->
+
+	</select>
+
+	<!-- 获取学习数据，只含教师资格证sku的，根据inTime -->
+	<select id="selectStudyDataOnlyTeachSkuByEnterTime" resultMap="trackClassCourseLiveStudyDataDtoResultMap">
+
+		<include refid="sql_selectStudyDataOnlyTeachSku_no_where" />
+		where
+			tccl.enter_time &gt;= #{beginTime} and tccl.enter_time &lt;= #{endTime}
+			and tccl.enter_time is not null and tccl.update_time is not null
+
+	</select>
+
+	<!-- 获取学习数据，一些额外指定的人的，根据inTime -->
+	<select id="selectStudyDataAssignedByEnterTime" resultMap="trackClassCourseLiveStudyDataDtoResultMap">
+
+		<include refid="sql_selectStudyDataAssigned_no_where" />
+		where
+			tccl.enter_time &gt;= #{beginTime} and tccl.enter_time &lt;= #{endTime}
+			and tccl.enter_time is not null and tccl.update_time is not null
+
+	</select>
+
+
+</mapper>

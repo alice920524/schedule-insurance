@@ -1,0 +1,40 @@
+package com.duia.mars.common.http.util;
+
+
+import com.duia.mars.common.util.MD5;
+
+import java.util.*;
+
+/**
+ * Created by chenqi on 2016/11/23.
+ */
+public class HttpTool {
+
+    private static String signSecret = "duiaNiuBi)JN#ERFGBN";
+
+    /**
+     * http请求参数加密
+     *
+     * @param params
+     * @return
+     */
+    public static String signature(Map<String, String> params) {
+        if (params == null) {
+            params = new HashMap<String, String>();
+        }
+        Set<String> keys = params.keySet();
+        List<String> list = new ArrayList<String>(keys);
+        Collections.sort(list);
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < list.size(); i++) {
+            if (i > 0) {
+                sb.append("&");
+            }
+            sb.append(list.get(i));
+            sb.append("=").append(params.get(list.get(i)));
+        }
+        sb.append(signSecret);
+        return MD5.getMD5(sb.toString());
+    }
+
+}

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.duia.mars.dao.ScheduleRecordMapper">
+    <resultMap id="BaseResultMap" type="com.duia.mars.model.ScheduleRecord">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="type" jdbcType="INTEGER" property="type"/>
+        <result column="schedule_date" jdbcType="DATE" property="scheduleDate"/>
+        <result column="class_type" jdbcType="VARCHAR" property="classType"/>
+        <result column="schedule_time" jdbcType="TIMESTAMP" property="scheduleTime"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="execute_time" jdbcType="VARCHAR" property="executeTime"/>
+        <result column="remark" jdbcType="LONGVARCHAR" property="remark"/>
+        <result column="project_key" jdbcType="VARCHAR" property="projectKey"/>
+    </resultMap>
+
+    <select id="page" resultMap="BaseResultMap">
+        SELECT * from schedule_record
+        WHERE 1=1
+        <if test="type != null">
+            and type = #{type}
+        </if>
+        <if test="status != null">
+            and status &lt; 1
+        </if>
+        AND project_key = 'sale'
+        ORDER BY status asc,schedule_time DESC
+    </select>
+
+    <!-- 更新状态为失败 -->
+    <update id="updateStatusAsFailById">
+        update
+            schedule_record
+        set
+            status = -1
+        where
+            id = #{id}
+            and project_key = 'sale'
+    </update>
+
+</mapper>

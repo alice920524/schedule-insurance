@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{'/css/bootstrap.min.css'}">
+    <style>
+        .restore{
+            cursor: pointer;
+            color: blue;
+        }
+    </style>
+</head>
+<body>
+<div id="projectKey" class="param" style="padding:20px;">
+    <select class="type">
+        <option value="">--请选择--</option>
+        <option value="8">统计首次付费时长</option>
+        <option value="9">超48小时关闭班级</option>
+        <option value="12">统计用户首单调度</option>
+        <option value="16">抽奖重置积分调度</option>
+        <option value="19">每日财务确认调度</option>
+        <option value="20">每月财务确认调度</option>
+        <option value="30">每日传输学习记录调度</option>
+        <option value="31">每日重新传输学习记录调度</option>
+    </select>
+    <input type="checkbox" id="scheduleStatus" class="status" value="-1"/>筛选调度失败记录
+    <input type="hidden" data-name="type"/>
+    <input type="hidden" data-name="status"/>
+    <input type="button" id="searchBtn" class="search" value="查询"/>
+</div>
+<div id="schedule/schedule-data">
+    <table class="table table-bordered table-condensed m-b-0" id="activity-list-table">
+        <thead>
+        <th>ID</th>
+        <th>类型</th>
+        <th>执行时间</th>
+        <th>访问类</th>
+        <th>描述</th>
+        <th>状态</th>
+        <th>执行时间</th>
+        <th>操作</th>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+
+<input type="hidden" id="pm" th:value="${pm}">
+<input type="hidden" id="testAttr" th:value="${testAttr}">
+
+<div class="dataTables_wrapper">
+    <div class="col-sm-5">
+        <div class="dataTables_info" id="countInfo" role="status" aria-live="polite"></div>
+    </div>
+    <div class="col-sm-7">
+        <div class="page-size ng-scope">
+            <ul class="pagination" id="pagination">
+                <!--<li class="page-first clk_page disabled" data_no="1"><a href="javascript:void(0);">首页</a></li>
+                <li class="pageNo on" data_no="1"><a href="javascript:void(0);">1</a></li>
+                <li class="pageNo clk_page" data_no="2"><a href="javascript:void(0);">2</a></li>
+                <li class="pageNo clk_page" data_no="3"><a href="javascript:void(0);">3</a></li>
+                <li class="pageNo clk_page" data_no="4"><a href="javascript:void(0);">4</a></li>
+                <li class="pageNo clk_page" data_no="5"><a href="javascript:void(0);">5</a></li>
+                <li class="disabled"><a href="javascript:void(0);">...</a></li>
+                <li class="pageNo clk_page" data_no="10"><a href="javascript:void(0);">10</a></li>
+                <li class="page-first clk_page" data_no="2"><a href="javascript:void(0);">下一页</a></li>
+                <li class="page-first clk_page " data_no="10"><a href="javascript:void(0);">尾页</a></li>-->
+            </ul>
+            <ul class="pagination" id="pagination_onePage" style="display: none;">
+                <li class="page-first clk_page disabled" data_no="1">
+                    <a href="javascript:void(0);">首页</a>
+                </li>
+                <li class="pageNo on" data_no="1">
+                    <a href="javascript:void(0);">1</a>
+                </li>
+                <li class="page-first clk_page disabled" data_no="1">
+                    <a href="javascript:void(0);">尾页</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" th:src="@{'/js/jquery-1.8.3.min.js'}"></script>
+<script th:src="@{'/js/schedule.js'}"></script>
+<script th:src="@{'/js/common.js'}"></script>
+</body>
+</html>

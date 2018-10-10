@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta charset="utf-8">
+		<title>设置调度状态为失败</title>
+		<script type="text/javascript" th:src="@{'/js/jquery-1.8.3.min.js'}"></script>
+	</head>
+<body>
+
+	调度ID: <input type="text" id="scheduleRecordId" placeholder="请输入调度ID"/>
+	<input type="button" onclick="setScheduleFail();" value="设置此ID状态为失败"/>
+	<label id="reminder"></label>
+
+	<script>
+
+		var url = "/restore/setScheduleAsFail";
+
+		function setScheduleFail() {
+
+			remind("");
+
+			var data = {scheduleRecordId: $("#scheduleRecordId").val()};
+			if (!data) {
+				remind("调度ID不可为空");
+				return ;
+			}
+			$.post(url, data, function (result) {
+				if (200 == result.code) {
+					remind("成功！已将调度ID:" + data.scheduleRecordId + "设置为失败。");
+					return;
+				} else {
+					remind("设置失败！" + result.message);
+					return;
+				}
+			});
+		}
+
+		function remind(msg) {
+			$("#reminder").text(msg);
+		}
+
+	</script>
+
+</body>
+</html>

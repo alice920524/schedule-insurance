@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.duia.mars.dao.TrackFirstOrderMapper">
+  <resultMap id="BaseResultMap" type="com.duia.mars.model.TrackFirstOrder">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="agent_channel_id" jdbcType="INTEGER" property="agentChannelId" />
+    <result column="order_id" jdbcType="INTEGER" property="orderId" />
+    <result column="money" jdbcType="DOUBLE" property="money" />
+    <result column="finance_time" jdbcType="TIMESTAMP" property="financeTime" />
+    <result column="colse_time" jdbcType="TIMESTAMP" property="colseTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="sku_id" jdbcType="INTEGER" property="skuId" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="pay_time" jdbcType="TIMESTAMP" property="payTime" />
+  </resultMap>
+
+    <!-- 定时任务把前一天的的数据存到track_firstorder-->
+    <insert id="saveData" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="int" keyProperty="id" order="AFTER">
+            SELECT
+            LAST_INSERT_ID()
+        </selectKey>
+        insert into track_first_order (	user_id,agent_channel_id,order_id,money,finance_time,colse_time,status,sku_id,sku_name,pay_time) values
+        <foreach collection="list" item="lt" separator=",">
+            (#{lt.userId},#{lt.agentChannelId},#{lt.orderId},#{lt.money},#{lt.financeTime},#{lt.colseTime},#{lt.status},#{lt.skuId},#{lt.skuName},#{lt.payTime})
+        </foreach>
+    </insert>
+</mapper>

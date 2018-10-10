@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.duia.mars.dao.CrmSaleHandoverNewMapper">
+  <resultMap id="BaseResultMap" type="com.duia.mars.model.CrmSaleHandoverNew">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="order_id" jdbcType="INTEGER" property="orderId" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="qq_num" jdbcType="VARCHAR" property="qqNum" />
+    <result column="sale_id" jdbcType="INTEGER" property="saleId" />
+    <result column="sale_name" jdbcType="VARCHAR" property="saleName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="accept_day" jdbcType="INTEGER" property="acceptDay" />
+    <result column="sale_status" jdbcType="INTEGER" property="saleStatus" />
+    <result column="teach_status" jdbcType="INTEGER" property="teachStatus" />
+    <result column="finance_status" jdbcType="INTEGER" property="financeStatus" />
+    <result column="colse_status" jdbcType="INTEGER" property="colseStatus" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    <result column="back_status" jdbcType="INTEGER" property="backStatus" />
+    <result column="back_num" jdbcType="DOUBLE" property="backNum" />
+    <result column="dep_id" jdbcType="INTEGER" property="depId" />
+    <result column="grp_id" jdbcType="INTEGER" property="grpId" />
+    <result column="sale_email" jdbcType="VARCHAR" property="saleEmail" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="order_num" jdbcType="VARCHAR" property="orderNum" />
+    <result column="pay_num" jdbcType="VARCHAR" property="payNum" />
+    <result column="pay_status" jdbcType="VARCHAR" property="payStatus" />
+    <result column="pay_type" jdbcType="VARCHAR" property="payType" />
+    <result column="program_name" jdbcType="VARCHAR" property="programName" />
+    <result column="program_id" jdbcType="INTEGER" property="programId" />
+    <result column="realpay_price" jdbcType="DOUBLE" property="realpayPrice" />
+    <result column="pay_time" jdbcType="VARCHAR" property="payTime" />
+    <result column="cost_price" jdbcType="DOUBLE" property="costPrice" />
+    <result column="type" jdbcType="CHAR" property="type" />
+    <result column="back_source" jdbcType="INTEGER" property="backSource" />
+    <result column="order_batch" jdbcType="INTEGER" property="orderBatch" />
+    <result column="order_instal" jdbcType="INTEGER" property="orderInstal" />
+    <result column="class_type_info" jdbcType="VARCHAR" property="classTypeInfo" />
+    <result column="order_batch_status" jdbcType="INTEGER" property="orderBatchStatus" />
+    <result column="is_tmall" jdbcType="INTEGER" property="isTmall" />
+    <result column="sku_id" jdbcType="INTEGER" property="skuId" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="achievement" jdbcType="INTEGER" property="achievement" />
+    <result column="teach_finish_time" jdbcType="VARCHAR" property="teachFinishTime" />
+    <result column="batch_audit_status" jdbcType="INTEGER" property="batchAuditStatus" />
+    <result column="finance_time" jdbcType="VARCHAR" property="financeTime" />
+    <result column="old_balance" jdbcType="DOUBLE" property="oldBalance" />
+    <result column="study_package_price" jdbcType="DOUBLE" property="studyPackagePrice" />
+    <result column="is_mail" jdbcType="INTEGER" property="isMail" />
+    <result column="qq_validate" jdbcType="VARCHAR" property="qqValidate" />
+  </resultMap>
+
+    <resultMap id="crmSaleHandoverNewResultDtoMap" type="com.duia.mars.common.dto.CrmSaleHandoverNewDto" extends="BaseResultMap">
+        <result property="registerChannel" column="register_channel" />
+        <result property="agentChannelId" column="agent_channel_id"/>
+    </resultMap>
+
+
+
+    <!-- 其他自定义SQL -->
+    <!--查询财务已确定的首单
+    包含三种情况
+    1.第一单确定首单 新增 转订单也算
+    2.首单之前记录 又被关闭，今天成单又存在
+    3.今天关闭一次或者多次，最后确定的 之前没有首单
+    -->
+    <select id="selectFinanceFirstOrder" resultMap="crmSaleHandoverNewResultDtoMap"  parameterType="Map">
+        SELECT * FROM (
+        select a.finance_time,a.cost_price,a.user_id,a.order_id,a.pay_time,a.register_channel,a.register_channel as agent_channel_id,a.sku_id,a.sku_name from ( SELECT
+        cshn.pay_time,cshn.finance_time,cshn.order_id,cshn.cost_price, cshn.user_id,cshn.sku_id,cshn.sku_name,po.pay_time as pay_time2,u.register_channel
+        FROM
+        crm_sale_handover_new cshn
+        LEFT JOIN pay_order po on cshn.user_id = po.user_id
+        LEFT JOIN users u ON cshn.user_id = u.id
+        WHERE
+        cshn.parent_id = 0
+        and cshn.finance_status=1
+        and cshn.achievement = 1
+        and (cshn.colse_status =0  or (cshn.colse_status =1 and po.turn_order_id >0) or (cshn.colse_status =1 and cshn.back_status=1))
+        AND cshn.pay_status = 'pay_status_success'
+        AND cshn.finance_time &gt;= #{beginTime}
+        AND cshn.finance_time &lt;= #{endTime}
+        and (cshn.batch_audit_status =0 or  cshn.batch_audit_status =2 or  cshn.batch_audit_status is NULL)
+        and po.pay_status = 'pay_status_success'
+        and po.order_parent_id = 0
+        GROUP BY  cshn.user_id
+        )as a  where a.pay_time = a.pay_time2
+        UNION
+        select a.finance_time,a.cost_price,a.user_id,a.order_id,a.pay_time,a.register_channel,a.register_channel as agent_channel_id,a.sku_id,a.sku_name from ( SELECT
+        cshn.pay_time,cshn.finance_time,cshn.order_id,cshn.cost_price, cshn.user_id,cshn.sku_id,cshn.sku_name,po.pay_time as pay_time2,u.register_channel
+        FROM
+        crm_sale_handover_new cshn
+        LEFT JOIN pay_order po on cshn.user_id = po.user_id
+        LEFT JOIN users u ON cshn.user_id = u.id
+        WHERE
+        cshn.parent_id = 0
+        and cshn.finance_status=1
+        and cshn.achievement = 1
+        and (cshn.colse_status =0  or (cshn.colse_status =1 and po.turn_order_id >0) or (cshn.colse_status =1 and cshn.back_status=1))
+        AND cshn.pay_status = 'pay_status_success'
+        AND cshn.finance_time &gt;= #{beginTime}
+        AND cshn.finance_time &lt;= #{endTime}
+        and (cshn.batch_audit_status =0 or  cshn.batch_audit_status =2 or  cshn.batch_audit_status is NULL)
+        and po.pay_status = 'pay_status_success'
+        and po.pay_status = 'pay_status_success'
+        AND po.pay_type != 'pay_type_instal'
+        and po.order_parent_id = 0
+        GROUP BY  cshn.user_id
+        )as a  where a.pay_time = a.pay_time2
+        UNION
+        select cshn.finance_time, cshn.cost_price, cshn.user_id,cshn.order_id,cshn.pay_time,u.register_channel,u.register_channel as agent_channel_id ,cshn.sku_id,cshn.sku_name from crm_sale_handover_new cshn
+        LEFT JOIN users u ON cshn.user_id = u.id
+        where
+        cshn.parent_id = 0
+        and cshn.finance_status=1
+        and cshn.achievement = 1
+        and cshn.colse_status = 0
+        AND cshn.finance_time &gt;= #{beginTime}
+        AND cshn.finance_time &lt;= #{endTime}
+        AND cshn.pay_status = 'pay_status_success'
+        and (cshn.batch_audit_status =0 or  cshn.batch_audit_status =2 or  cshn.batch_audit_status is NULL)
+        AND cshn.user_id in (
+        SELECT
+        cshn1.user_id
+        FROM
+        crm_sale_handover_new cshn1 LEFT JOIN track_first_order tfo on cshn1.user_id = tfo.user_id
+        WHERE
+        cshn1.finance_time &gt;= #{beginTime}
+        AND cshn1.finance_time &lt;= #{endTime}
+        and cshn1.colse_status = 1
+        and tfo.status is null )
+        union
+        select cshn.finance_time,cshn.cost_price, cshn.user_id,cshn.order_id,cshn.pay_time,u.register_channel,u.register_channel as agent_channel_id,cshn.sku_id,cshn.sku_name  from crm_sale_handover_new cshn
+        LEFT JOIN users u ON cshn.user_id = u.id
+        where
+        cshn.parent_id = 0
+        and cshn.finance_status=1
+        and cshn.achievement = 1
+        and cshn.colse_status = 0
+        AND cshn.finance_time &gt;= #{beginTime}
+        AND cshn.finance_time &lt;= #{endTime}
+        AND cshn.pay_status = 'pay_status_success'
+        and (cshn.batch_audit_status =0 or  cshn.batch_audit_status =2 or  cshn.batch_audit_status is NULL)
+        AND cshn.user_id in (
+        SELECT
+        user_id
+        FROM
+        track_first_order
+        WHERE
+        status =-1 )
+        ORDER BY finance_time,user_id
+        )as a GROUP BY user_id
+    </select>
+
+
+</mapper>

@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.duia.mars.dao.ClassStudentDetailMapper">
+
+	<resultMap type="com.duia.mars.model.ClassStudentDetail" id="classStudentDetailResultMap">
+		<result property="id" column="id" />
+		<result property="userId" column="user_id" />
+		<result property="name" column="name" />
+		<result property="birthdate" column="birthdate" />
+		<result property="sex" column="sex" />
+		<result property="province" column="province" />
+		<result property="city" column="city" />
+		<result property="degree" column="degree" />
+		<result property="profession" column="profession" />
+		<result property="level" column="level" />
+		<result property="isexam" column="isexam" />
+		<result property="examDate" column="exam_date" />
+		<result property="istrain" column="istrain" />
+		<result property="trainOrgName" column="train_org_name" />
+		<result property="trainPrice" column="train_price" />
+		<result property="mobile" column="mobile" />
+		<result property="qqNo" column="qq_no" />
+		<result property="qqName" column="qq_name" />
+		<result property="email" column="email" />
+		<result property="maritalStatus" column="marital_status" />
+		<result property="child" column="child" />
+		<result property="income" column="income" />
+		<result property="salary" column="salary" />
+		<result property="netYear" column="net_year" />
+		<result property="shopTime" column="shop_time" />
+		<result property="netTime" column="net_time" />
+		<result property="shopPayment" column="shop_payment" />
+		<result property="eduPayment" column="edu_payment" />
+		<result property="reason" column="reason" />
+		<result property="yxAccount" column="yx_account" />
+		<result property="yxToken" column="yx_token" />
+		<result property="yxOpen" column="yx_open" />
+	</resultMap>
+
+<!--
+	<sql id="table_columns">
+		id,
+		user_id,
+		name,
+		birthdate,
+		sex,
+		province,
+		city,
+		degree,
+		profession,
+		level,
+		isexam,
+		exam_date,
+		istrain,
+		train_org_name,
+		train_price,
+		mobile,
+		qq_no,
+		qq_name,
+		email,
+		marital_status,
+		child,
+		income,
+		salary,
+		net_year,
+		shop_time,
+		net_time,
+		shop_payment,
+		edu_payment,
+		reason,
+		yx_account,
+		yx_token,
+		yx_open
+    </sql>
+	<sql id="entity_properties">
+		#{id},
+		#{userId},
+		#{name},
+		#{birthdate},
+		#{sex},
+		#{province},
+		#{city},
+		#{degree},
+		#{profession},
+		#{level},
+		#{isexam},
+		#{examDate},
+		#{istrain},
+		#{trainOrgName},
+		#{trainPrice},
+		#{mobile},
+		#{qqNo},
+		#{qqName},
+		#{email},
+		#{maritalStatus},
+		#{child},
+		#{income},
+		#{salary},
+		#{netYear},
+		#{shopTime},
+		#{netTime},
+		#{shopPayment},
+		#{eduPayment},
+		#{reason},
+		#{yxAccount},
+		#{yxToken},
+		#{yxOpen}
+	</sql>
+
+	&lt;!&ndash; 适用于主键自增类型 &ndash;&gt;
+	<insert id="save" parameterType="ClassStudentDetail" useGeneratedKeys="true" keyProperty="id">
+		insert into class_student_detail( <include refid="table_columns" /> ) 
+		values ( <include refid="entity_properties" /> )
+	</insert>
+
+	<update id="update" parameterType="ClassStudentDetail">
+		update class_student_detail 
+		<trim prefix="set" suffixOverrides=",">
+			<if test="userId != null and userId != ''">user_id = #{userId},</if>
+			<if test="name != null and name != ''">name = #{name},</if>
+			<if test="birthdate != null and birthdate != ''">birthdate = #{birthdate},</if>
+			<if test="sex != null and sex != ''">sex = #{sex},</if>
+			<if test="province != null and province != ''">province = #{province},</if>
+			<if test="city != null and city != ''">city = #{city},</if>
+			<if test="degree != null and degree != ''">degree = #{degree},</if>
+			<if test="profession != null and profession != ''">profession = #{profession},</if>
+			<if test="level != null and level != ''">level = #{level},</if>
+			<if test="isexam != null and isexam != ''">isexam = #{isexam},</if>
+			<if test="examDate != null and examDate != ''">exam_date = #{examDate},</if>
+			<if test="istrain != null and istrain != ''">istrain = #{istrain},</if>
+			<if test="trainOrgName != null and trainOrgName != ''">train_org_name = #{trainOrgName},</if>
+			<if test="trainPrice != null and trainPrice != ''">train_price = #{trainPrice},</if>
+			<if test="mobile != null and mobile != ''">mobile = #{mobile},</if>
+			<if test="qqNo != null and qqNo != ''">qq_no = #{qqNo},</if>
+			<if test="qqName != null and qqName != ''">qq_name = #{qqName},</if>
+			<if test="email != null and email != ''">email = #{email},</if>
+			<if test="maritalStatus != null and maritalStatus != ''">marital_status = #{maritalStatus},</if>
+			<if test="child != null and child != ''">child = #{child},</if>
+			<if test="income != null and income != ''">income = #{income},</if>
+			<if test="salary != null and salary != ''">salary = #{salary},</if>
+			<if test="netYear != null and netYear != ''">net_year = #{netYear},</if>
+			<if test="shopTime != null and shopTime != ''">shop_time = #{shopTime},</if>
+			<if test="netTime != null and netTime != ''">net_time = #{netTime},</if>
+			<if test="shopPayment != null and shopPayment != ''">shop_payment = #{shopPayment},</if>
+			<if test="eduPayment != null and eduPayment != ''">edu_payment = #{eduPayment},</if>
+			<if test="reason != null and reason != ''">reason = #{reason},</if>
+			<if test="yxAccount != null and yxAccount != ''">yx_account = #{yxAccount},</if>
+			<if test="yxToken != null and yxToken != ''">yx_token = #{yxToken},</if>
+			<if test="yxOpen != null and yxOpen != ''">yx_open = #{yxOpen},</if>
+		</trim>
+		<where>id = #{id}</where>
+	</update>
+
+	<select id="findById" resultMap="classStudentDetailResultMap" parameterType="String" >
+		select <include refid="table_columns" />
+		from class_student_detail
+		where id = #{id}
+	</select>
+
+	<select id="queryAll" resultMap="classStudentDetailResultMap">
+		select <include refid="table_columns" /> 
+		from class_student_detail
+	</select>
+
+	&lt;!&ndash; 使用like用法：columnName like concat('%',#columnName#,'%') &ndash;&gt;
+	<sql id="page_where">
+		<trim prefix="where" prefixOverrides="and | or ">
+			<if test="userId != null and userId != ''">and user_id = #{userId}</if>
+			<if test="name != null and name != ''">and name = #{name}</if>
+			<if test="birthdate != null and birthdate != ''">and birthdate = #{birthdate}</if>
+			<if test="sex != null and sex != ''">and sex = #{sex}</if>
+			<if test="province != null and province != ''">and province = #{province}</if>
+			<if test="city != null and city != ''">and city = #{city}</if>
+			<if test="degree != null and degree != ''">and degree = #{degree}</if>
+			<if test="profession != null and profession != ''">and profession = #{profession}</if>
+			<if test="level != null and level != ''">and level = #{level}</if>
+			<if test="isexam != null and isexam != ''">and isexam = #{isexam}</if>
+			<if test="examDate != null and examDate != ''">and exam_date = #{examDate}</if>
+			<if test="istrain != null and istrain != ''">and istrain = #{istrain}</if>
+			<if test="trainOrgName != null and trainOrgName != ''">and train_org_name = #{trainOrgName}</if>
+			<if test="trainPrice != null and trainPrice != ''">and train_price = #{trainPrice}</if>
+			<if test="mobile != null and mobile != ''">and mobile = #{mobile}</if>
+			<if test="qqNo != null and qqNo != ''">and qq_no = #{qqNo}</if>
+			<if test="qqName != null and qqName != ''">and qq_name = #{qqName}</if>
+			<if test="email != null and email != ''">and email = #{email}</if>
+			<if test="maritalStatus != null and maritalStatus != ''">and marital_status = #{maritalStatus}</if>
+			<if test="child != null and child != ''">and child = #{child}</if>
+			<if test="income != null and income != ''">and income = #{income}</if>
+			<if test="salary != null and salary != ''">and salary = #{salary}</if>
+			<if test="netYear != null and netYear != ''">and net_year = #{netYear}</if>
+			<if test="shopTime != null and shopTime != ''">and shop_time = #{shopTime}</if>
+			<if test="netTime != null and netTime != ''">and net_time = #{netTime}</if>
+			<if test="shopPayment != null and shopPayment != ''">and shop_payment = #{shopPayment}</if>
+			<if test="eduPayment != null and eduPayment != ''">and edu_payment = #{eduPayment}</if>
+			<if test="reason != null and reason != ''">and reason = #{reason}</if>
+			<if test="yxAccount != null and yxAccount != ''">and yx_account = #{yxAccount}</if>
+			<if test="yxToken != null and yxToken != ''">and yx_token = #{yxToken}</if>
+			<if test="yxOpen != null and yxOpen != ''">and yx_open = #{yxOpen}</if>
+		</trim>
+	</sql>
+
+	<select id="search" resultMap="classStudentDetailResultMap" parameterType="ClassStudentDetail">
+		select <include refid="table_columns" />
+		from class_student_detail
+		<include refid="page_where" />
+	</select>
+
+	<select id="page" resultMap="classStudentDetailResultMap" parameterType="ClassStudentDetail">
+		select <include refid="table_columns" />
+		from class_student_detail
+		<include refid="page_where" />
+		limit #{firstIndex},#{pageSize}
+	</select>
+
+    <select id="count" resultType="long" parameterType="ClassStudentDetail">
+        select count(id) from class_student_detail
+        <include refid="page_where" />
+    </select>-->
+
+	<!-- 其他自定义SQL -->
+
+	<!-- 根据多个用户id获取用户id和学员id -->
+	<select id="selectUserStudentByUserIds" resultMap="classStudentDetailResultMap">
+		select
+			user_id, id
+		from
+			class_student_detail
+		where
+			user_id in
+				<foreach collection="userIds" item="userId" separator="," open="(" close=")">
+					#{userId}
+				</foreach>
+	</select>
+
+</mapper>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.duia.mars.dao.AuthorityUsersMapper">
+  <resultMap id="BaseResultMap" type="com.duia.mars.model.AuthorityUsers">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="password" jdbcType="CHAR" property="password" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="sex" jdbcType="CHAR" property="sex" />
+    <result column="job" jdbcType="VARCHAR" property="job" />
+    <result column="num" jdbcType="VARCHAR" property="num" />
+    <result column="user_lock" jdbcType="BIT" property="userLock" />
+    <result column="user_status" jdbcType="BIT" property="userStatus" />
+    <result column="big_img" jdbcType="VARCHAR" property="bigImg" />
+    <result column="small_img" jdbcType="VARCHAR" property="smallImg" />
+    <result column="administrator" jdbcType="BIT" property="administrator" />
+    <result column="create_datetime" jdbcType="TIMESTAMP" property="createDatetime" />
+    <result column="last_modify_user_id" jdbcType="INTEGER" property="lastModifyUserId" />
+    <result column="last_modify_user_email" jdbcType="VARCHAR" property="lastModifyUserEmail" />
+    <result column="last_modify_datetime" jdbcType="TIMESTAMP" property="lastModifyDatetime" />
+    <result column="last_login_datetime" jdbcType="TIMESTAMP" property="lastLoginDatetime" />
+    <result column="position" jdbcType="INTEGER" property="position" />
+    <result column="token" jdbcType="VARCHAR" property="token" />
+    <result column="point" jdbcType="INTEGER" property="point" />
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+    <result column="signature" jdbcType="VARCHAR" property="signature" />
+    <result column="introduct" jdbcType="VARCHAR" property="introduct" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="user_type" jdbcType="INTEGER" property="userType" />
+  </resultMap>
+
+    <!-- 其他自定义SQL -->
+    <update id="updateUserPoint">
+        update authority_users SET point = 0
+    </update>
+
+</mapper>
